@@ -1,9 +1,3 @@
-feedback,rating,yesno,text_sentiment
-"question_1: 4
-question_2: yes
-question_3: 
-",,,
-"question_1: 5
-question_2: yes
-question_3: 
-",,,
+feedback,sentiment
+"Hi, its bad!
+",-0.8749999999999998

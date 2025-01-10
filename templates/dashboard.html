@@ -5,27 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
         <h1>Dashboard</h1>
     </header>
     <main>
-        <h2>Rating Sentiment</h2>
-        <p>Positive: {{ data.rating.positive }}</p>
-        <p>Neutral: {{ data.rating.neutral }}</p>
-        <p>Negative: {{ data.rating.negative }}</p>
-
-        <h2>Yes/No Sentiment</h2>
-        <p>Positive: {{ data.yesno.positive }}</p>
-        <p>Negative: {{ data.yesno.negative }}</p>
-
-        <h2>Text Sentiment</h2>
-        <p>Positive: {{ data.text.positive }}</p>
-        <p>Neutral: {{ data.text.neutral }}</p>
-        <p>Negative: {{ data.text.negative }}</p>
+        <div>
+            <h2>Feedback Metrics</h2>
+            <p>Positive Feedback: {{ data.positive_feedback }}</p>
+            <p>Negative Feedback: {{ data.negative_feedback }}</p>
+        </div>
+        <div>
+            <h2>Customize Your Dashboard</h2>
+            <label for="template">Select Template:</label>
+            <select id="template" onchange="loadTemplate()">
+                <option value="">--Select--</option>
+                {% for template in templates %}
+                <option value="{{ template.name }}">{{ template.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="dashboard-widgets">
+            <h2>Feedback Over Time</h2>
+            <label for="chartType">Select Chart Type:</label>
+            <select id="chartType" onchange="updateChart()">
+                <option value="line">Line Chart</option>
+                <option value="bar">Bar Chart</option>
+                <option value="pie">Pie Chart</option>
+            </select>
+            <canvas id="feedbackChart"></canvas>
+        </div>
+        <a href="/">Back to Home</a>
     </main>
-    <a href="/">Back to Home</a>
+    <script>
+        const feedbackData = {{ data.feedback_over_time | tojson }};
+        const labels = feedbackData.map((entry, index) => index);
+        
+        const chartData = {
+            labels: labels,
+            datasets: [{
+                label: 'Feedback Sentiment Over Time',
+                data: feedbackData.map(entry => entry.sentiment),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1
+            }]
+        };
+
+        let chartType = 'line';
+        const config = {
+            type: chartType,
+            data: chartData,
+            options: {}
+        };
+        
+        let feedbackChart = new Chart(
+            document.getElementById('feedbackChart'),
+            config
+        );
+
+        function updateChart() {
+            chartType = document.getElementById('chartType').value;
+            feedbackChart.destroy();
+            feedbackChart = new Chart(
+                document.getElementById('feedbackChart'),
+                {
+                    type: chartType,
+                    data: chartData,
+                    options: {}
+                }
+            );
+        }
+
+        function loadTemplate() {
+            const template = document.getElementById('template').value;
+            const dashboardWidgets = document.getElementById('dashboard-widgets');
+
+            dashboardWidgets.innerHTML = '';
+
+            if (template === 'Sales Dashboard') {
+                dashboardWidgets.innerHTML += `
+                    <h2>Sales Over Time</h2>
+                    <canvas id="salesChart"></canvas>
+                `;
+                // Additional sales widgets can be added here
+            } else if (template === 'Customer Feedback Dashboard') {
+                dashboardWidgets.innerHTML += `
+                    <h2>Feedback Sentiment Over Time</h2>
+                    <label for="chartType">Select Chart Type:</label>
+                    <select id="chartType" onchange="updateChart()">
+                        <option value="line">Line Chart</option>
+                        <option value="bar">Bar Chart</option>
+                        <option value="pie">Pie Chart</option>
+                    </select>
+                    <canvas id="feedbackChart"></canvas>
+                `;
+                // Re-initialize the chart after adding it dynamically
+                feedbackChart = new Chart(
+                    document.getElementById('feedbackChart'),
+                    config
+                );
+            }
+        }
+    </script>
     <script src="/static/js/scripts.js"></script>
 </body>
 </html>

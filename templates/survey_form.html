@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Form</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Survey: {{ template }}</h1>
+    </header>
+    <main>
+        <form action="/submit_survey" method="post">
+            <input type="hidden" name="template" value="{{ template }}">
+            {% for question in survey %}
+            <label for="question_{{ loop.index }}">{{ question.question }}</label>
+            {% if question.type == 'rating' %}
+            <select id="question_{{ loop.index }}" name="question_{{ loop.index }}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            {% elif question.type == 'yesno' %}
+            <select id="question_{{ loop.index }}" name="question_{{ loop.index }}">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+            {% elif question.type == 'text' %}
+            <textarea id="question_{{ loop.index }}" name="question_{{ loop.index }}"></textarea>
+            {% endif %}
+            <br>
+            {% endfor %}
+            <button type="submit">Submit Survey</button>
+        </form>
+        <a href="/">Back to Home</a>
+    </main>
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>
+

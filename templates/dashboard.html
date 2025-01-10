@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Dashboard</h1>
+    </header>
+    <main>
+        <h2>Rating Sentiment</h2>
+        <p>Positive: {{ data.rating.positive }}</p>
+        <p>Neutral: {{ data.rating.neutral }}</p>
+        <p>Negative: {{ data.rating.negative }}</p>
+
+        <h2>Yes/No Sentiment</h2>
+        <p>Positive: {{ data.yesno.positive }}</p>
+        <p>Negative: {{ data.yesno.negative }}</p>
+
+        <h2>Text Sentiment</h2>
+        <p>Positive: {{ data.text.positive }}</p>
+        <p>Neutral: {{ data.text.neutral }}</p>
+        <p>Negative: {{ data.text.negative }}</p>
+    </main>
+    <a href="/">Back to Home</a>
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>
+
